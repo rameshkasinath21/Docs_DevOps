@@ -1,0 +1,121 @@
+Puppet: Introduction
+  Puppet is IT automation software that gives system administrators the power to easily automate repetitive tasks, quickly deploy critical applications, and proactively manage infrastructure changes, on-premise or in the cloud.
+  Puppet is a server configuration tool using which a system administrator can configure and maintain multiple servers from a single machine instead of configuring changes on each and every server individually.
+  Puppet also helps in automation of server process such as start, stop and restart. It also helps in automating the installation of supporting software components in the servers.
+
+Requirement:
+            To Install Puppet Master and Agent and establish connectivity between them such that the Master can manage the Agent node.
+
+Puppet Architecture:
+By default, Puppet Enterprise uses a client/server Puppet deployment, where agent nodes fetch configurations from a central puppet master.
+
+Master Role Installation:
+Pre-requisite:
+•	Synchronization of time with the agent (ntpdate pool.ntp.org)
+Installation Order
+•	Has to be installed before installing agent on a machine
+
+Agent Role Installation:
+Pre-requisites:
+•	Synchronization of time with the agent (ntpdate pool.ntp.org)
+•	Connectivity check with Puppet Master
+
+Signing Certificate:
+Pre-requisites:
+•	Certificate name issued by the master should be known while installing agent. The certificate will generally be the FQDN of master
+
+Setting up the Puppet environment:
+Downloading and Installing the Puppet Master
+  To install the puppet master on a Linux machine follow the below steps:
+    	Downloading Puppet Enterprise for the particular Operating System from the Puppetlabs site
+      http://info.puppetlabs.com/download-pe.html
+
+•	Unarchive the installer tarball, usually with tar -xzf <TARBALL FILE>.
+•	Navigate to the resulting directory in your shell and run the puppet-enterprise-installer script (with root privileges) on the terminal using the following command:
+
+$ sudo ./puppet-enterprise-installer
+
+•	After the above command is executed, the installation of PE on Linux will be started.
+•	The PE installer configures Puppet by asking a series of questions. Most questions have a default answer (displayed in brackets), which you can accept by pressing enter without typing a replacement. For questions with a yes or no answer, the default answer is capitalized (e.g. “[y/N]”)
+
+Important Questions 
+Selecting Roles:
+First, the installer will ask which of PE’s roles to install. The selected role determines the following questions.
+
+•	The Puppet Master Role
+Compile and serve configuration catalogs to puppet agent nodes
+•	The Puppet Agent Role
+Run the puppet agent daemon, which pulls configurations from the puppet master and applies them
+•	The Database Support Role
+This role provides required database support for PuppetDB and the console. MySQL is the default database used.
+•	The Console Role
+Enables administrators to directly edit resources on nodes, trigger immediate Puppet runs
+•	The Cloud Provisioner Role
+
+Create new VMware and Amazon EC2 virtual machine instances
+Note:
+If you choose the puppet master, database support, or console roles, the puppet agent role will be installed automatically.
+After you choose the roles for the system you’re installing onto, the installer will ask questions to configure those roles. The questions asked by the installer are given below:
+
+
+Passwords
+The following characters are forbidden in all passwords: \ (backslash), ' (single quote), " (double quote), ‘,’ (comma), () (right and left parentheses), | (pipe), & (ampersand), and $ (dollar sign). For all passwords used during installation, we recommend using only alphanumeric characters
+
+Puppet Master Questions
+Certname or Certificate name
+  The certname is the puppet master’s unique identifier. It should be a DNS name at which the master server can be reliably reached, and defaults to its fully-qualified domain name.
+(If the master’s certname is not one of its DNS names, you may need to edit puppet.conf after installation.)
+
+Valid DNS Names
+  The master’s certificate contains a static list of valid DNS names, and agents won’t trust the master if they contact it at an unlisted address. You should make sure that this list contains the DNS name or alias you’ll be configuring your agents to contact.
+The valid DNS names setting should be a comma-separated list of hostnames. The default set of DNS names will be derived from the certname you chose, and will include the default puppet master name of “puppet”.
+
+Console Questions
+Port
+  You must choose a port on which to serve the console’s web interface. If you aren’t already serving web content from this machine, it will default to port 443, so you can reach it at https://yourconsoleserver:443.
+If the installer detects another web server on the node, it will suggest the first open port at or above 3000.
+  User Email and Password
+Access to the console’s web interface is limited to approved users and governed by a lightweight system of roles. During installation, you must create an initial admin user for the console by providing an email address and password.
+
+SMTP Server
+` The console’s account management tools will send activation emails to new users, and requires an SMTP server to do so.
+•	If you cannot provide an SMTP server, an admin user can manually copy and email the activation codes for new users. (Note that localhost will usually work as well.)
+
+Databases
+  The console needs multiple MySQL databases and MySQL users in order to operate, but can automatically configure them. It can also automatically install the MySQL server if it isn’t already present on the system.
+The installer gives slightly different options to choose from depending on your system’s configuration:
+•	Automatically install a MySQL server and auto-configure databases (only available if MySQL is not yet installed). This option will generate a random root MySQL password, and you will need to look it up in the saved answer file after installation finishes. A message at the end of the installer will tell you the location of the answer file.
+•	Auto-configure databases on an existing local or remote MySQL server. You will need to provide your server’s root MySQL password to the installer. (Note that if you want to auto-configure databases on a remote server, you must make sure the root MySQL user is allowed to log in remotely.)
+•	Use a set of pre-existing manually configured databases and users.
+
+Note that the names of the console and inventory databases are related: the name of the inventory service database must start with the name of the primary console database, followed by _inventory_service.
+After answering all the question of the installer, the answers will be saved into answers.install (/etc/puppetlabs/installer/answers.install) file. 
+
+Confirming Installation: The installer will offer a final chance to confirm your answers before installing. When we press Y for this, then the installation of Puppet master begins. 
+
+Downloading and Installing the Puppet Agent
+  
+    The installation of Puppet Agent is quite simple when compared to the Puppet Master. The only important information to be provided is the Master certificate name.
+
+Puppet Agent installation on Windows:
+
+  The installation of Puppet Agent on windows is done using a MSI file. 
+Puppet Agent installation on Non-Windows machines:
+  
+  The installation of Puppet Agent on non-windows platform is done using a tarball file.
+  The installation of agent can also be done by storing the answers in an answers file and then providing this as an input to the installer.
+  The puppet can be installed with answers file in the below format
+  $ ./puppet-enterprise-installer –a silent-answer-file
+
+Sample Answer Files
+Sample Answer file For Puppet Master Role, DB Role and Console Role Installation
+
+
+Puppet Master
+•	The puppet master role should be installed on a robust, dedicated server.
+•	Minimum requirements: 2 processor cores, 1 GB RAM, and very accurate timekeeping.
+•	Recommended requirements: 2-4 processor cores, at least 4 GB RAM, and very accurate timekeeping. (up to 1,000 agent nodes can be managed)
+Puppet Agent
+ The puppet agent role has very modest requirements.
+•	Minimum requirements: Any hardware able to comfortably run a supported operating system.
+
